@@ -1,0 +1,27 @@
+services:
+  # Frontend service
+  frontend:
+    image: frontend:0.1.0-alpine
+    ports:
+      - 8080:80
+  # Backend service
+  backend:
+    image: backend:0.1.0
+    ports:
+      - 3800:3800
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PASS=mypass
+  # Database service
+  postgres:
+    image: postgres:14.5
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=mypass
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db:/docker-entrypoint-initdb.d
+volumes:
+  pgdata:
