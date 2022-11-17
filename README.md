@@ -11,7 +11,7 @@ A basic budget javascript application using reacjs, express and Postgress.
 docker run `
 -e POSTGRES_PASSWORD=mypass `
 -e PGDATA=/var/lib/postgresql/data/pgdata `
--v PGDISCO:/var/lib/postgresql/data `
+-v PGDISCO:/var/lib/postgresql/data `    # Persistence
 -v $pwd\db:/docker-entrypoint-initdb.d ` # Load init.sql
 -d -p 5432:5432 postgres:14.5
 ```
