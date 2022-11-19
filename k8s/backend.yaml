@@ -15,6 +15,14 @@ spec:
       containers:
       - name: back-app
         image: susguzman/w2-backend:0.1.0
+        env:
+          - name: POSTGRES_PASS
+            valueFrom:
+              secretKeyRef:
+                name: pg-secrets
+                key: password
+          - name: POSTGRES_HOST
+            value: pg-service
         resources:
           limits:
             memory: "256Mi"
