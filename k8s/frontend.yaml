@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: front-app
-        image: susguzman/w2-frotend:0.1.0-alpine
+        image: susguzman/w2-frotend:0.1.0-alpine-gcp
         resources:
           limits:
             memory: "256Mi"

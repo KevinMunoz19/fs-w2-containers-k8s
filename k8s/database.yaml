@@ -11,43 +11,6 @@ spec:
     requests:
       storage: 20Gi
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: pg-cm
-data:
-  init.sql: |
-    CREATE TABLE PERSON (
-      PERSON SERIAL PRIMARY KEY,
-      EMAIL TEXT UNIQUE NOT NULL,
-      PASSWORD TEXT NOT NULL,
-      PERSON_TOKEN TEXT NOT NULL,
-      FIRST_NAME TEXT NOT NULL,
-      LAST_NAME TEXT NOT NULL,
-      ADD_DATE DATE DEFAULT CURRENT_TIMESTAMP,
-      MOD_DATE DATE
-    );
-
-    -- CATEGORY CREATION
-    CREATE TABLE CATEGORY (
-      CATEGORY SERIAL PRIMARY KEY,
-      PERSON SERIAL NOT NULL REFERENCES PERSON(PERSON),
-      NAME TEXT NOT NULL,
-      DESCRIPTION TEXT NOT NULL,
-      ADD_DATE DATE DEFAULT CURRENT_TIMESTAMP,
-      MOD_DATE DATE
-    );
-
-    -- CREATE FUNCTION
-    CREATE OR REPLACE FUNCTION API_TOKEN (PSECRET TEXT) 
-        RETURNS SETOF TEXT 
-    AS $$
-    BEGIN
-        RETURN QUERY SELECT MD5(PSECRET);
-    END; $$ 
-
-    LANGUAGE 'plpgsql';
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -67,7 +30,7 @@ spec:
           claimName: pg-pv-claim
       - name: pg-cm-storage
         configMap:
-          name: pg-cm
+          name: pg-configmap
       containers:
       - name: pg-db
         image: postgres:14.5
@@ -75,7 +38,7 @@ spec:
           - name: POSTGRES_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: pg-secrets
+                name: pg-secrets-ag
                 key: password
           - name: PGDATA
             value: "/var/lib/postgresql/data/pgdata"
@@ -102,11 +65,3 @@ spec:
   ports:
   - port: 5432
     targetPort: 5432
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: pg-secrets
-type: Opaque
-data:
-  password: bXlwYXNz
